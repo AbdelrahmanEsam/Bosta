@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Bosta</string>
+    <string name="profile">Profile</string>
+    <string name="my_albums">my Albums</string>
+    <string name="albumName">albumName</string>
+    <string name="albumid">albumId</string>
+    <string name="search_in_images">Search in Images</string>
+    <string name="thumbnailImage">thumbnailImage</string>
+    <string name="imageUrl">imageUrl</string>
+    <string name="please_check_this_beautiful_image">please check this beautiful Image :  \n %1$s</string>
+</resources>
