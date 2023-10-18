@@ -17,7 +17,7 @@ dependencies {
     compileOnly(libs.args.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
 
-    // Enables using type-safe accessors to reference plugins from the [plugins] block defined in version catalogs.
+
     implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
@@ -31,7 +31,6 @@ gradlePlugin {
     }
     plugins {
         createPlugin("com.bosta.hilt", "AndroidHiltConventionPlugin")
-        createPlugin("com.bosta.library", "AndroidLibraryConventionPlugin")
         createPlugin("com.bosta.library.compose", "AndroidLibraryComposeConventionPlugin")
         createPlugin("com.bosta.feature", "AndroidFeatureConventionPlugin")
         createPlugin("com.bosta.application", "AndroidApplicationConventionPlugin")
@@ -39,6 +38,5 @@ gradlePlugin {
             "com.bosta.application.compose",
             "AndroidApplicationComposeConventionPlugin"
         )
-        createPlugin("com.bosta.test", "AndroidTestConventionPlugin")
     }
 }

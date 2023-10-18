@@ -93,7 +93,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 add("implementation", libs.core.ktx)
                 add("implementation", libs.bundles.livecycle)
                 add("implementation", libs.bundles.retrofit)
-                add("implementation", libs.bundles.okhttp)
+                add("implementation", libs.bundles.lottie)
                 add("androidTestImplementation", libs.junit)
             }
 

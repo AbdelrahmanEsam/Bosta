@@ -40,7 +40,6 @@ class AlbumViewModel @Inject constructor(
 
             is AlbumIntents.UpdateAlbumId -> {
                 _state.update { it.copy(albumId = intent.id) }
-                onEvent(AlbumIntents.GetAlbumPhotos)
             }
 
             is AlbumIntents.UpdateAlbumName -> {

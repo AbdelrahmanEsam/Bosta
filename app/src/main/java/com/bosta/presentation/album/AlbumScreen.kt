@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -12,15 +13,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -30,6 +32,10 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bosta.R
 import com.bosta.presentation.image.ImageDialog
 import com.bosta.util.collectAsSharedFlowWithLifeCycle
@@ -52,6 +58,12 @@ fun AlbumScreen(
     val connectionStatus = connectivityStatus.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lazyGridState = rememberLazyGridState()
+    val noInternetLottie by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.no_internet))
+    val logoAnimationState = animateLottieCompositionAsState(
+        composition = noInternetLottie,
+        isPlaying = true,
+        speed = 0.5f
+    )
 
     LaunchedEffect(key1 = true) {
         delay(1000)
@@ -73,7 +85,7 @@ fun AlbumScreen(
     }
 
 
-    if (activePhotoUrl != null) {
+    if (activePhotoUrl != null && connectionStatus.value == ConnectivityObserver.Status.Available) {
         ImageDialog(
             albumImageUrl = activePhotoUrl,
         ) {
@@ -82,21 +94,27 @@ fun AlbumScreen(
     }
 
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.Top) {
 
-        albumName?.let {
-            Header(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                albumName = it,
-                searchState = state.value.search
-            ) { search ->
-                viewModel.onEvent(AlbumIntents.UpdateSearch(search))
+    Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
+        if (connectionStatus.value == ConnectivityObserver.Status.Available) {
+
+            SideEffect {
+                viewModel.onEvent(AlbumIntents.GetAlbumPhotos)
             }
-            Spacer(modifier = Modifier.size(15.sdp))
-        }
 
-        state.value.photosModel?.let {
+            albumName?.let {
+                Header(
+                    modifier = Modifier.align(CenterHorizontally),
+                    albumName = it,
+                    searchState = state.value.search
+                ) { search ->
+                    viewModel.onEvent(AlbumIntents.UpdateSearch(search))
+                }
+                Spacer(modifier = Modifier.size(15.sdp))
+            }
+
             LazyVerticalGrid(
+                modifier = Modifier.fillMaxSize(),
                 columns = GridCells.Adaptive(minSize = 70.sdp),
                 state = lazyGridState
             ) {
@@ -120,12 +138,27 @@ fun AlbumScreen(
                     )
                 }
             }
-        } ?: run {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                color = Yellow,
+
+
+            if (state.value.photosModel == null) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(CenterHorizontally),
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+
+
+        } else {
+
+
+            LottieAnimation(
+                noInternetLottie,
+                modifier = Modifier
+                    .size(100.sdp)
+                    .align(CenterHorizontally),
+                progress = { logoAnimationState.progress },
+                contentScale = ContentScale.Crop,
             )
         }
-
     }
 }

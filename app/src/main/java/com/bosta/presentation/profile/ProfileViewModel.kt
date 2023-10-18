@@ -1,6 +1,5 @@
 package com.bosta.presentation.profile
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bosta.di.Dispatcher
@@ -8,7 +7,6 @@ import com.bosta.di.DispatcherAnnotations.IO
 import com.bosta.domain.model.albums.AlbumsModel
 import com.bosta.domain.model.profiles.UserModel
 import com.bosta.domain.usecases.GetAlbumByUserIdUseCase
-import com.bosta.domain.usecases.GetPhotosByAlbumIdUseCase
 import com.bosta.domain.usecases.GetUserByIdUseCase
 import com.bosta.util.response.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,7 +54,6 @@ class ProfileViewModel @Inject constructor(
             val getUserProfileData = async { getUserById() }
             val getUserAlbumsData = async { getAlbumByUserId() }
             awaitAll(getUserAlbumsData, getUserProfileData)
-            Log.d("response",_state.value.toString())
         }
 
     }
@@ -88,8 +85,6 @@ class ProfileViewModel @Inject constructor(
 
 
                 }
-
-
             }
     }
 
@@ -117,36 +112,6 @@ class ProfileViewModel @Inject constructor(
 
                 }
             }
-    }
-
-
-//    private fun getPhotoByAlbumId()
-//    {
-//        viewModelScope.launch(ioDispatcher) {
-//            getPhotosByAlbumIdUseCase.execute<PhotosModel>("5").collectLatest { response ->
-//
-//                when(response){
-//                    is Response.Failure -> {
-//                        Log.d("response",response.error.toString())
-//                    }
-//                    is Response.Success -> {
-//                        Log.d("response",response.data.toString())
-//                    }
-//                }
-//
-//
-//            }
-//        }
-//    }
-
-
-    init {
-
-        onEvent(ProfileIntents.GetUserProfileAndAlbumsData)
-
-//        getUserById()
-//        getAlbumByUserId()
-//        getPhotoByAlbumId()
     }
 
 

@@ -6,4 +6,5 @@ plugins {
 
 dependencies {
 
+    implementation(libs.androidx.junit.ktx)
 }
